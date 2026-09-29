@@ -47,4 +47,6 @@ async def stop(ctx):
         await ctx.send("Zatrzymano odtwarzanie i rozłączono.")
 
 # Podmień poniższy tekst na swój token z notatnika
-bot.run('Twój_Prawdziwy_Token_Który_Wpisałeś')
+import os
+TOKEN = os.environ.get('DISCORD_TOKEN')
+bot.run(TOKEN)
