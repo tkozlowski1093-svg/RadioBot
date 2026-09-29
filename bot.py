@@ -34,7 +34,7 @@ async def graj(ctx):
 
     if not voice_client.is_playing():
         # Używamy pobranego pliku ffmpeg.exe z tego samego folderu
-        source = discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=STREAM_URL, **FFMPEG_OPTIONS)
+        source = discord.FFmpegPCMAudio(STREAM_URL, **FFMPEG_OPTIONS)
         voice_client.play(source)
         await ctx.send(f"Rozpoczynam transmisję na kanale {channel.name}.")
     else:
