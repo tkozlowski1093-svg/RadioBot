@@ -2,6 +2,12 @@ import discord
 from discord.ext import commands
 import os
 
+try:
+    import nacl
+    print(">>> PyNaCl jest poprawnie załadowany w systemie!")
+except ImportError:
+    print(">>> UWAGA: PyNaCl NIE JEST widoczny dla Pythona!")
+    
 # Konfiguracja uprawnień bota
 intents = discord.Intents.default()
 intents.message_content = True
