@@ -1,4 +1,2 @@
-﻿discord.py
-davey
 discord.py
 PyNaCl
