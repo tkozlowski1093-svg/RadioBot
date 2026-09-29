@@ -50,3 +50,15 @@ async def stop(ctx):
 import os
 TOKEN = os.environ.get('DISCORD_TOKEN')
 bot.run(TOKEN)
+
+@bot.event
+async def on_message(message):
+    # Ignoruj wiadomości od samego bota
+    if message.author == bot.user:
+        return
+    
+    # Wypisz w konsoli Railway każdą wiadomość, jaką widzi bot
+    print(f"Odebrano wiadomość od {message.author}: {message.content}")
+    
+    # Przetwórz komendy
+    await bot.process_commands(message)
