@@ -2,26 +2,12 @@ import discord
 from discord.ext import commands
 import os
 
-try:
-    import nacl
-    print(">>> PyNaCl jest poprawnie załadowany w systemie!")
-except ImportError:
-    print(">>> UWAGA: PyNaCl NIE JEST widoczny dla Pythona!")
-    
-# Konfiguracja uprawnień bota
+# Konfiguracja intencji (niezbędne, aby bot czytał komendy na czacie)
 intents = discord.Intents.default()
 intents.message_content = True
-intents.guilds = True
-intents.voice_states = True
 
+# Inicjalizacja bota z prefiksem "!"
 bot = commands.Bot(command_prefix='!', intents=intents)
-
-# Link do strumienia HLS (Open FM)
-STREAM_URL = "https://stream-cdn-1.open.fm/OFM57/ngrp:standard/chunklist_b192000.m3u8?t=11dc0c46b397f06babe6bf83c771d0548e0ad5bd46323e6cf9da170999706ce9238b7bdb302845c36aa741385425c45f06a3505ce4f33eb1f768e114e676d856bd6afa9843d0909fbee081cbbbf4c561cdeea3ae3b54a55d4a82d5e9cd25aa691aa6ae67c7209883b6928028c090efb8e1263584512ed5dba1f8d67b38009136dab4d25d6da033e39c2bb54042df6615acdf9d429d074e10783a3bc07377181042a66b7043a1cb394425e5aaf048e2c09a528ffe52c327619e686dab8526fb706e0d324464af47d8e492909a883981071179ecb4cf97bfaec4c0987fc35e633bb39742271e10f0ede4ea1a4eed5a1bff0626b24d56526dbbfff52f"
-FFMPEG_OPTIONS = {
-    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5 -fflags nobuffer',
-    'options': '-vn'
-}
 
 @bot.event
 async def on_ready():
@@ -29,34 +15,49 @@ async def on_ready():
 
 @bot.command()
 async def graj(ctx):
+    # Sprawdzenie czy użytkownik jest na kanale głosowym
     if not ctx.author.voice:
         await ctx.send("Musisz być na kanale głosowym, abym mógł dołączyć!")
         return
-
+        
     channel = ctx.author.voice.channel
     
-    if ctx.voice_client is None:
+    # Dołączanie do kanału (lub pobranie obecnego połączenia)
+    if not ctx.voice_client:
         voice_client = await channel.connect()
     else:
         voice_client = ctx.voice_client
-        await voice_client.move_to(channel)
 
+    # Parametry FFmpeg wymuszające ciągłe odtwarzanie bez zrywania
+    FFMPEG_OPTIONS = {
+        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+        'options': '-vn'
+    }
+    
+    # Twój link źródłowy z Open FM (.m3u8)
+    url_radia = "https://stream-cdn-1.open.fm/OFM57/ngrp:standard/chunklist_b192000.m3u8?t=830e79b2df44863f5f96d797c3851bea03697070faf1949d40630165aec45230b57981714c764b512de80c4919adc061e83509c3f606b548f2e5a6f3471ef2c74018f9811461cebe00f4d0c144b23d25ab81b374ee09439dfc1526a197055e3ad8bd599c281144861a445d3b66ee9a274bfabddfdf6df915021bcc4299133936af56200d8aa7173358fafb5c076a31caad24f4e1e3d77aab5f0cb6b62bd51c06b4e5fef6e0d099e6232c640397d7769733e7727dafbb03d24e7584c4ee4b7de5d723d71b62334c71a24582a8cd03f8d5c3fc9f3d614c5e302f37893345910f2562c1cd4c2bbbda0c08dfc1fb8ca5f67d2d31688a8dbdf30fa991f9b6"
+
+    # Uruchomienie strumienia audio
     if not voice_client.is_playing():
-        source = discord.FFmpegPCMAudio(STREAM_URL, **FFMPEG_OPTIONS)
+        source = discord.FFmpegPCMAudio(url_radia, **FFMPEG_OPTIONS)
         voice_client.play(source)
-        await ctx.send(f"Rozpoczynam transmisję na kanale {channel.name}.")
+        await ctx.send("📻 Odtwarzam Open FM z Twojego linku!")
     else:
-        await ctx.send("Radio już gra na tym kanale!")
+        await ctx.send("Już coś gram!")
 
 @bot.command()
 async def stop(ctx):
+    # Wyjście z kanału i zatrzymanie radia
     if ctx.voice_client:
         await ctx.voice_client.disconnect()
-        await ctx.send("Zatrzymano odtwarzanie i rozłączono.")
+        await ctx.send("Wyszedłem z kanału. Cisza w eterze!")
     else:
-        await ctx.send("Nie jestem na żadnym kanale.")
+        await ctx.send("Nie ma mnie na żadnym kanale!")
 
-TOKEN = os.getenv('DISCORD_TOKEN')
-bot.run(TOKEN)
+# Pobieranie tokenu (skonfiguruj zmienną DISCORD_TOKEN w zakładce Variables na Railway)
+TOKEN = os.environ.get("DISCORD_TOKEN") 
 
-# refresh
+if TOKEN:
+    bot.run(TOKEN)
+else:
+    print("BŁĄD: Nie znaleziono zmiennej DISCORD_TOKEN!")
