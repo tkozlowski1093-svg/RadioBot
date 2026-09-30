@@ -30,7 +30,7 @@ async def graj(ctx):
     }
     
     # Stały, bezpośredni link do strumienia MP3 Open FM (np. stacja Impreza)
-    url_radia = "https://stream-cdn-1.open.fm/OFM57/ngrp:standard/chunklist_b192000.m3u8?t=830e79b2df44863f5f96d797c3851bea03697070faf1949d40630165aec45230b57981714c764b512de80c4919adc061e83509c3f606b548f2e5a6f3471ef2c74018f9811461cebe00f4d0c144b23d25ab81b374ee09439dfc1526a197055e3ad8bd599c281144861a445d3b66ee9a274bfabddfdf6df915021bcc4299133936af56200d8aa7173358fafb5c076a31caad24f4e1e3d77aab5f0cb6b62bd51c06b4e5fef6e0d099e6232c640397d7769733e7727dafbb03d24e7584c4ee4b7de5d723d71b62334c71a24582a8cd03f8d5c3fc9f3d614c5e302f37893345910f2562c1cd4c2bbbda0c08dfc1fb8ca5f67d2d31688a8dbdf30fa991f9b6"
+    url_radia = "https://stream-cdn-1.open.fm/OFM57/ngrp:standard/chunklist_b192000.m3u8?t=7aa9c60b66fbe1195b50928f622660bd02ea664f44fabb6e895a9f76d8b71bc1098a2a633f6e674894b99853d143ebc63de66226af5fff675120a3ec5b0c827d8d05acee8451dde9e816dbd93469a9015d4b2bdbe94d7dc3ada350af4f5b2277fe88198790a80b5474810aade63ca60750cdc5c8b792e379f4ad7b3e1eb207935145dea5d0f3cfe69dad4678fca615a3b8114a9110b45663b38a43aca491f4f2ebbe2658ad462ed5945607ac7b3d281db8b902322143165126963ee8496cc4247c720eb34c1e8e96856744269702be9a879109d93c060f5dfc645b4d133fbc233eac7333b0efd57f2cc7bcfcdb9c"
     if not voice_client.is_playing():
         source = discord.FFmpegPCMAudio(url_radia, **FFMPEG_OPTIONS)
         voice_client.play(source)
