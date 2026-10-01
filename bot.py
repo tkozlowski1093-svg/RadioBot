@@ -34,7 +34,7 @@ async def graj(ctx):
     if not voice_client.is_playing():
         source = discord.FFmpegPCMAudio(url_radia, **FFMPEG_OPTIONS)
         voice_client.play(source)
-        await ctx.send("📻 Odtwarzam Open FM!")
+        await ctx.send("📻 Odtwarzam Radio Party GEJUCHYY!")
     else:
         await ctx.send("Już coś gram!")
 
